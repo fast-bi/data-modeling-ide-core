@@ -1,0 +1,37 @@
+{
+  "files.associations": {
+    "*.sql": "sql",
+    "*.yml": "yaml"
+  },
+  "[jinja-sql]": {
+    "editor.defaultFormatter": "oderwat.indent-rainbow"
+  },
+  "turntable.dbtVersion": "1.7",
+  "turntable.profilesDirectory": ".dbt/",
+  "terminal.integrated.gpuAcceleration": "off",
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "turntable.environmentVariables": [
+  ],
+  "terminal.integrated.env.linux": {
+    "DBT_PROFILES_DIR": "./.dbt",
+    "PATH": "/home/coder/.local/bin:/usr/lib/python3.8:/usr/lib/python3.8/lib-dynload:/usr/local/lib/python3.8/dist-packages:/usr/lib/python3/dist-packages:/usr/lib/python3.11:/usr/lib/python3.11/lib-dynload:/home/coder/.local/lib/python3.11/site-packages:/usr/local/lib/python3.11/dist-packages:/usr/lib/code-server/lib/vscode/bin/remote-cli:/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  },
+  "workbench.settings.applyToAllProfiles": [
+    "dbt.profilesDirOverride"
+  ],
+  "diffEditor.ignoreTrimWhitespace": false,
+  "git.openRepositoryInParentFolders": "always",
+  "sqlfluff.config": ".sqlfluff",
+  "sqlfluff.suppressNotifications": true,
+  "sqlfluff.excludeRules": [
+    "L003", "L018", "L036", "LT13", "LT12", "AL09", "JJ01", "LT08"
+  ],
+  "markdown.preview.openMarkdownLinks": "inEditor",
+  "markdown.preview.breaks": true,
+  "markdown.preview.doubleClickToSwitchToEditor": true,
+  "workbench.editorAssociations": {
+    "*.md": "default"
+  }
+}

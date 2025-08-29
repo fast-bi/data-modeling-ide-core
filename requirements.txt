@@ -1,0 +1,17 @@
+psycopg2-binary
+psycopg2
+requests==2.32.2
+PyYAML==6.0.2
+six==1.16.0
+google-cloud==0.34.0
+google-auth==2.40.1
+acryl-datahub==1.2.0.6
+dbt-core==1.9.9
+dbt-bigquery==1.9.2
+dbt-snowflake==1.9.4
+dbt-redshift==1.9.5
+dbt-fabric==1.9.6
+re-data==0.11.0
+sqlfluff==3.4.2
+sqlfluff-templater-dbt==3.4.2
+dbt-dry-run==0.8.3
