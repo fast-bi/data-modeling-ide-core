@@ -1,0 +1,160 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags
+    branches:
+      - master  # Build and push on master branch
+  pull_request:
+    branches:
+      - master  # Only security scan on PRs
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: 4fastbi/data-modeling-ide-core
+
+jobs:
+  # Security scan job for PRs
+  security-scan:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (no push)
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.number }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.number }}
+          severity: 'CRITICAL'
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Comment PR with scan results
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🔍 Docker image security scan completed successfully!
+              
+              ✅ **No critical vulnerabilities found**
+              
+              Image scanned: \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:pr-${{ github.event.number }}\`
+              
+              The scan checked for:
+              - Container image vulnerabilities
+              - OS package vulnerabilities
+              - Application dependencies in the final image`
+            });
+
+  # Build and push job for tags and master
+  build-and-push:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern=v{{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            # Removed branch-SHA tagging to avoid tags like master-<sha>
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Note: We scan images on PRs only to avoid duplicate work on master
+
+      - name: Generate incremental tag
+        id: tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          # Extract version from Git tag (e.g., v0.1.0 -> 0.1.0)
+          GIT_VERSION=${GITHUB_REF#refs/tags/v}
+          
+          # Get the latest patch version for this major.minor from Docker Hub
+          MAJOR_MINOR=$(echo "$GIT_VERSION" | cut -d. -f1,2)
+          LATEST_PATCH=$(curl -s "https://registry.hub.docker.com/v2/repositories/${{ env.IMAGE_NAME }}/tags/?page_size=100" | \
+            jq -r --arg pattern "^${MAJOR_MINOR}\.[0-9]+$" '.results[] | select(.name | test($pattern)) | .name' | \
+            sort -V | tail -n 1)
+          
+          if [ -z "$LATEST_PATCH" ]; then
+            # No existing patch versions for this major.minor, use the Git tag version
+            NEW_TAG="$GIT_VERSION"
+          else
+            # Extract patch number and increment
+            CURRENT_PATCH=$(echo "$LATEST_PATCH" | cut -d. -f3)
+            NEW_PATCH=$((CURRENT_PATCH + 1))
+            NEW_TAG="${MAJOR_MINOR}.${NEW_PATCH}"
+          fi
+          
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+          echo "Git version: $GIT_VERSION, Latest patch: $LATEST_PATCH, New tag: $NEW_TAG"
+
+      - name: Tag and push with incremental version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          # Tag with incremental version
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.new_tag }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.tag.outputs.new_tag }}
+          
+          echo "Pushed incremental tag: ${{ steps.tag.outputs.new_tag }}"
+
+      - name: Output image info
+        run: |
+          echo "✅ Successfully built and pushed:"
+          echo "Tags: ${{ steps.meta.outputs.tags }}"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]] && [ -n "${{ steps.tag.outputs.new_tag }}" ]; then
+            echo "Incremental tag: ${{ steps.tag.outputs.new_tag }}"
+          fi
