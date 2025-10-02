@@ -89,9 +89,9 @@ RUN apt update && apt install google-cloud-sdk -y
 RUN curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowsql-1.3.3-linux_x86_64.bash && SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.3.3-linux_x86_64.bash
 
 # Update Go to the latest version (1.24.1 as of the current date)
-# RUN curl -O https://dl.google.com/go/go1.24.1.linux-amd64.tar.gz \
-#     && tar -C /usr/local -xzf go1.24.1.linux-amd64.tar.gz \
-#     && rm go1.24.1.linux-amd64.tar.gz
+RUN curl -O https://dl.google.com/go/go1.25.0.linux-amd64.tar.gz \
+    && tar -C /usr/local -xzf go1.25.0.linux-amd64.tar.gz \
+    && rm go1.25.0.linux-amd64.tar.gz
 
 # Set Go environment variables
 ENV PATH="/usr/local/go/bin:${PATH}"
