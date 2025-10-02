@@ -49,17 +49,17 @@ if [ -f "$current_path/dbt_project.yml" ]; then
     /usr/local/bin/yqs eval 'del(.[].outputs.sa, .[].outputs.test)' .dbt/profiles.yml -i
     /usr/local/bin/yqs eval '.[].target="dev"' .dbt/profiles.yml -i
     /usr/local/bin/yqs eval 'del(.config.target)' .dbt/profiles.yml -i
-    type=$(/usr/local/bin/yqs eval '.[0].outputs.dev.type' profiles.yml)
+    type=$(/usr/local/bin/yqs eval '.[].outputs.dev.type' profiles.yml)
     if [ "$type" = "bigquery" ]; then
-        /usr/local/bin/yqs eval '.[].outputs.dev.dataset="dev_'${GIT_BRANCH}'" '.dbt/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.dataset = "dev_" + env(GIT_BRANCH)' .dbt/profiles.yml
     elif [ "$type" = "snowflake" ]; then        
-        /usr/local/bin/yqs eval '.[].outputs.dev.schema="dev_'${GIT_BRANCH}'"' .dbt/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.schema = "dev_" + env(GIT_BRANCH)' .dbt/profiles.yml
     elif [ "$type" = "redshift" ]; then
-        /usr/local/bin/yqs eval '.[].outputs.dev.schema="dev_'${GIT_BRANCH}'"' .dbt/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.schema = "dev_" + env(GIT_BRANCH)' .dbt/profiles.yml
     elif [ "$type" = "fabric" ]; then
-        /usr/local/bin/yqs eval '.[].outputs.dev.schema="dev_'${GIT_BRANCH}'"' .dbt/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.schema = "dev_" + env(GIT_BRANCH)' .dbt/profiles.yml
     else
-        /usr/local/bin/yqs eval '.[].outputs.dev.schema="dev_'${GIT_BRANCH}'"' .dbt/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.schema = "dev_" + env(GIT_BRANCH)' .dbt/profiles.yml
     fi
 
     # Create lightdash directory and copy profile
@@ -69,17 +69,17 @@ if [ -f "$current_path/dbt_project.yml" ]; then
     # Remove SA and test outputs, set target to dev and update dataset
     /usr/local/bin/yqs eval 'del(.[].outputs.sa, .[].outputs.test)' .lightdash/profiles.yml -i
     /usr/local/bin/yqs eval '.[].target="dev"' .lightdash/profiles.yml -i
-    type=$(/usr/local/bin/yqs eval '.[0].outputs.dev.type' profiles.yml)
+    type=$(/usr/local/bin/yqs eval '.[].outputs.dev.type' profiles.yml)
     if [ "$type" = "bigquery" ]; then
-        /usr/local/bin/yqs eval '.[].outputs.dev.dataset="dev_'${GIT_BRANCH}'"' .lightdash/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.dataset = "dev_" + env(GIT_BRANCH)' .lightdash/profiles.yml
     elif [ "$type" = "snowflake" ]; then        
-        /usr/local/bin/yqs eval '.[].outputs.dev.schema="dev_'${GIT_BRANCH}'"' .lightdash/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.schema = "dev_" + env(GIT_BRANCH)' .lightdash/profiles.yml
     elif [ "$type" = "redshift" ]; then
-        /usr/local/bin/yqs eval '.[].outputs.dev.schema="dev_'${GIT_BRANCH}'"' .lightdash/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.schema = "dev_" + env(GIT_BRANCH)' .lightdash/profiles.yml
     elif [ "$type" = "fabric" ]; then
-        /usr/local/bin/yqs eval '.[].outputs.dev.schema="dev_'${GIT_BRANCH}'"' .lightdash/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.schema = "dev_" + env(GIT_BRANCH)' .lightdash/profiles.yml
     else
-        /usr/local/bin/yqs eval '.[].outputs.dev.schema="dev_'${GIT_BRANCH}'"' .lightdash/profiles.yml -i
+        /usr/local/bin/yqs eval -i '.[].outputs.dev.schema = "dev_" + env(GIT_BRANCH)' .lightdash/profiles.yml
     fi
 
     # Verify the changes
