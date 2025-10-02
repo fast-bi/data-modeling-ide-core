@@ -1,7 +1,7 @@
 # Top level build args
 
 ARG build_for=linux/amd64
-ARG BASE_CODE_SERVER_IMAGE="codercom/code-server:4.104.1-focal"
+ARG BASE_CODE_SERVER_IMAGE="codercom/code-server:4.104.2-focal"
 
 
 FROM --platform=$build_for ${BASE_CODE_SERVER_IMAGE}
