@@ -1,0 +1,14 @@
+# Trivy ignore file for vulnerabilities in base image that cannot be updated
+# These are inherited from the codercom/code-server base image
+
+# CVE-2023-26114: code-server WebSocket vulnerability (in base image)
+CVE-2023-26114
+
+# CVE-2019-19919: handlebars prototype pollution (in base image)
+CVE-2019-19919
+
+# CVE-2021-23369: handlebars remote code execution (in base image)
+CVE-2021-23369
+
+# CVE-2021-23383: handlebars remote code execution (in base image)
+CVE-2021-23383

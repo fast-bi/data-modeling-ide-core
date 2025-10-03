@@ -1,7 +1,7 @@
 # Top level build args
 
 ARG build_for=linux/amd64
-ARG BASE_CODE_SERVER_IMAGE="codercom/code-server:4.103.2-focal"
+ARG BASE_CODE_SERVER_IMAGE="codercom/code-server:4.104.2-focal"
 
 
 FROM --platform=$build_for ${BASE_CODE_SERVER_IMAGE}
@@ -31,7 +31,7 @@ RUN apt-get update \
     cl-base64 \
     jq \
     uuid-runtime \
-    yamllint \ 
+    yamllint \
     unzip \
     gcc
 
@@ -39,28 +39,45 @@ RUN apt-get update \
 ENV PYTHONIOENCODING=utf-8
 ENV LANG=C.UTF-8
 
-# Install python 3.11
-RUN add-apt-repository ppa:deadsnakes/ppa
+# Install Python 3.11 on focal (build from source)
 RUN apt-get update && apt-get install -y \
-    python3.11 \
-    python3.11-distutils \
-    python3.11-dev \
-    python3.11-venv \
-    python3-venv
+    wget \
+    xz-utils \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libncurses5-dev \
+    libncursesw5-dev \
+    libffi-dev \
+    liblzma-dev \
+    tk-dev \
+  && rm -rf /var/lib/apt/lists/*
+RUN PY_VER=3.11.9 \
+  && cd /tmp \
+  && wget https://www.python.org/ftp/python/${PY_VER}/Python-${PY_VER}.tar.xz \
+  && tar -xf Python-${PY_VER}.tar.xz \
+  && cd Python-${PY_VER} \
+  && ./configure --enable-optimizations --with-lto \
+  && make -j"$(nproc)" \
+  && make altinstall \
+  && cd / \
+  && rm -rf /tmp/Python-${PY_VER} /tmp/Python-${PY_VER}.tar.xz
 
 # Install pip for Python 3.11
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 RUN python3.11 get-pip.py
 
 # Upgrade pip and install other dependencies
-RUN pip install --upgrade pip setuptools wheel yq pytz --no-cache-dir
+RUN python3.11 -m pip install --upgrade pip setuptools wheel yq pytz --no-cache-dir
 
 COPY ./requirements.txt /usr/pypi_app/
-RUN pip install --upgrade -r /usr/pypi_app/requirements.txt --no-cache-dir --ignore-installed
+RUN python3.11 -m pip install --upgrade -r /usr/pypi_app/requirements.txt --no-cache-dir --ignore-installed
 
 # Create symbolic links for python and pip
 RUN ln -s /usr/bin/python3.11 /usr/bin/python
-RUN ln -s /usr/bin/pip3 /usr/bin/pip
+RUN ln -s /usr/local/bin/pip3.11 /usr/bin/pip || true
 
 RUN curl -sL -o /usr/local/bin/yqs https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && chmod a+x /usr/local/bin/yqs
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -yq nodejs && npm install -g npm
@@ -72,9 +89,9 @@ RUN apt update && apt install google-cloud-sdk -y
 RUN curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowsql-1.3.3-linux_x86_64.bash && SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.3.3-linux_x86_64.bash
 
 # Update Go to the latest version (1.24.1 as of the current date)
-RUN curl -O https://dl.google.com/go/go1.24.1.linux-amd64.tar.gz \
-    && tar -C /usr/local -xzf go1.24.1.linux-amd64.tar.gz \
-    && rm go1.24.1.linux-amd64.tar.gz
+RUN curl -O https://dl.google.com/go/go1.25.0.linux-amd64.tar.gz \
+    && tar -C /usr/local -xzf go1.25.0.linux-amd64.tar.gz \
+    && rm go1.25.0.linux-amd64.tar.gz
 
 # Set Go environment variables
 ENV PATH="/usr/local/go/bin:${PATH}"
