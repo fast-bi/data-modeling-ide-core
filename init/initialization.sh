@@ -82,7 +82,6 @@ if [ ! -f "$SETUP_FLAG_FILE" ]; then
     install_extension "/usr/vsix/koszti.snowflake-driver-for-sqltools-0.5.0.vsix"
     install_extension "/usr/vsix/Evidence.sqltools-bigquery-driver-0.0.6.vsix"
     install_extension "/usr/vsix/vscode-bigquery-0.0.1.vsix"
-    install_extension "/usr/vsix/turntable.turntable-for-dbt-core-1.0.4.vsix"
     install_extension "/usr/vsix/oderwat.indent-rainbow-8.3.1.vsix"
     
     # Create flag file to indicate initial setup is complete
