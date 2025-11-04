@@ -1,7 +1,7 @@
 # Top level build args
 
 ARG build_for=linux/amd64
-ARG BASE_CODE_SERVER_IMAGE="codercom/code-server:4.104.2-focal"
+ARG BASE_CODE_SERVER_IMAGE="codercom/code-server:4.105.1-focal"
 
 
 FROM --platform=$build_for ${BASE_CODE_SERVER_IMAGE}
@@ -86,7 +86,7 @@ RUN npm install -g @lightdash/cli
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee /etc/apt/sources.list.d/google-cloud-sdk.list
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 RUN apt update && apt install google-cloud-sdk -y
-RUN curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.3/linux_x86_64/snowsql-1.3.3-linux_x86_64.bash && SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.3.3-linux_x86_64.bash
+RUN curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.4/linux_x86_64/snowsql-1.4.3-linux_x86_64.bash && SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.4.3-linux_x86_64.bash
 
 # Update Go to the latest version (1.24.1 as of the current date)
 RUN curl -O https://dl.google.com/go/go1.25.0.linux-amd64.tar.gz \
