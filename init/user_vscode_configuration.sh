@@ -184,7 +184,7 @@ if [ "$GOOGLE_CLOUD" = "True" ]; then
 
     # Check if the Google Cloud Application-Default authentication is not expired
     # Call the Python script and capture its output
-    output=$(python /usr/init/check_gcp_application_default_credentials.py 2>&1)
+    output=$(python3 /usr/init/check_gcp_application_default_credentials.py 2>&1)
 
     case $? in
         1)

@@ -43,6 +43,15 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          docker system prune -af
+          df -h
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
@@ -50,7 +59,7 @@ jobs:
           severity: 'CRITICAL'
           exit-code: '1'
           ignore-unfixed: true
-          ignorefile: '.trivyignore'
+          trivyignores: '.trivyignore'
 
       - name: Comment PR with scan results
         uses: actions/github-script@v7
