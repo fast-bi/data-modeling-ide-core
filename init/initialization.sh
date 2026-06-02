@@ -71,18 +71,26 @@ if [ ! -f "$SETUP_FLAG_FILE" ]; then
         fi
     }
     
-    # Install extensions
+    # Install extensions from Open VSX
     echo 'Installing VS Code extensions...'
     install_extension "ms-python.python"
     install_extension "redhat.vscode-yaml"
     install_extension "sqlfluff.vscode-sqlfluff"
-    install_extension "mtxr.sqltools"
     install_extension "ms-toolsai.jupyter"
     install_extension "ms-toolsai.jupyter-renderers"
-    install_extension "/usr/vsix/koszti.snowflake-driver-for-sqltools-0.5.0.vsix"
-    install_extension "/usr/vsix/Evidence.sqltools-bigquery-driver-0.0.6.vsix"
-    install_extension "/usr/vsix/vscode-bigquery-0.0.1.vsix"
-    install_extension "/usr/vsix/oderwat.indent-rainbow-8.3.1.vsix"
+    install_extension "oderwat.indent-rainbow"
+    install_extension "innoverio.vscode-dbt-power-user"
+
+    # Install Claude Code extension from VS Marketplace (not available on Open VSX)
+    echo 'Installing Claude Code extension...'
+    CLAUDE_EXT_VSIX="/tmp/anthropic.claude-code.vsix"
+    if curl -fsSL -o "$CLAUDE_EXT_VSIX" \
+        "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/anthropic/vsextensions/claude-code/latest/vspackage"; then
+        install_extension "$CLAUDE_EXT_VSIX"
+        rm -f "$CLAUDE_EXT_VSIX"
+    else
+        echo "Warning: Failed to download Claude Code extension"
+    fi
     
     # Create flag file to indicate initial setup is complete
     touch "$SETUP_FLAG_FILE"

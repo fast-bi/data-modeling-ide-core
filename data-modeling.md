@@ -29,9 +29,9 @@ Before starting data modeling, ensure that:
 
 ## 3. Verify Profile Configuration
 
-Upon opening your project directory, profile files for Turntable and Lightdash will be automatically created:
+Upon opening your project directory, profile files for dbt Power User and Lightdash will be automatically created:
 
-* `.dbt/profiles.yml`: Configuration for dbt
+* `.dbt/profiles.yml`: Configuration for dbt and dbt Power User
 * `.lightdash/profiles.yml`: Configuration for the Lightdash data exploration tool
 
 These profiles are pre-configured for development. Verify their contents to ensure they align with your development environment.
@@ -40,18 +40,25 @@ These profiles are pre-configured for development. Verify their contents to ensu
 
 You have two options for developing your dbt project:
 
-### Option A: Using Turntable Extension (Recommended for Quick Start)
+### Option A: Using dbt Power User Extension (Recommended)
 
-Turntable provides an integrated development environment within VS Code with features like:
-- Visual model compilation and building
-- Automatic documentation generation
-- Integrated testing and validation
+dbt Power User provides a rich integrated development environment within VS Code with features like:
+- Visual lineage graph (upstream/downstream model dependencies)
+- One-click model compilation and building directly from the editor
+- Automatic documentation generation with AI assistance
+- Integrated testing, column-level lineage, and query previews
 
-#### Setup Turntable:
-1. Open the Turntable extension within VS Code
-2. Follow the wizard
-3. In the Turntable wizard, at the "dbt Project" section, add all necessary environment variables based on your data warehouse type (e.g., Snowflake, BigQuery, Redshift)
-4. These variables are essential for Turntable to connect to your data warehouse and generate documentation files
+#### Setup dbt Power User:
+1. Open the dbt Power User panel (dbt icon in the Activity Bar on the left)
+2. The extension reads `.dbt/profiles.yml` automatically — no additional setup needed
+3. If prompted, confirm the dbt project path points to your `dbt_project.yml`
+4. Environment variables (including `GIT_BRANCH`) are pre-configured in workspace settings
+
+#### Using Claude Code AI Assistant:
+Claude Code is pre-installed and can accelerate your dbt development:
+- Press `Ctrl+Shift+P` → "Claude: Open" to open the Claude Code panel
+- Ask Claude to generate dbt models, write tests, or review your SQL
+- Use it to auto-generate `.yml` documentation for your models
 
 ### Option B: Using Lightdash CLI (Manual Approach)
 
@@ -156,12 +163,11 @@ packages:
 
 ## 8. Compile and Build Your Model
 
-### If Using Turntable:
-1. Return to your model file (e.g., nasa_sky_news.sql) in the VS Code editor
-2. In the right-hand corner of the VS Code window, you should see the "dbt" letters (indicating the Turntable dbt integration)
-3. Click the "dbt" letters
-4. Choose "Compile with (DownStream/UpStream)"
-5. If the compilation is successful, click the "dbt" letters again and choose "Build"
+### If Using dbt Power User:
+1. Open your model file (e.g., `nasa_sky_news.sql`) in the VS Code editor
+2. Click the **▶ Run** or **⚡ Build** button that appears above the SQL file in the dbt Power User toolbar
+3. Alternatively, right-click the file in the dbt Power User sidebar and choose "Run model"
+4. Compilation results and query previews appear in the dbt Power User panel
 
 ### If Using Lightdash CLI:
 Run one of the following commands in your terminal:
@@ -173,13 +179,12 @@ lightdash compile --exclude package:re_data --profiles-dir .lightdash/
 
 ## 9. Generate Documentation
 
-### If Using Turntable:
-1. Click on your model in the VS Code editor (e.g., nasa_sky_news.sql)
-2. Open the Turntable documentation wizard
-3. Click the "Autofill" button and wait for the process to complete
-4. Review the automatically filled descriptions
-5. Double-check the generated documentation for accuracy and completeness
-6. Save the documentation
+### If Using dbt Power User:
+1. Open the dbt Power User panel and navigate to the **Documentation** section
+2. Click **Generate Docs** to auto-generate YAML documentation for your models
+3. Use the AI-assisted documentation feature to auto-fill column descriptions
+4. Review the automatically generated descriptions for accuracy
+5. Save the documentation — dbt Power User writes directly to your `.yml` files
 
 ### If Using Lightdash CLI:
 1. Run the following commands to generate documentation structure:
@@ -193,7 +198,7 @@ lightdash compile --exclude package:re_data --profiles-dir .lightdash/
    lightdash validate --exclude package:re_data --profiles-dir .lightdash/
    ```
 
-## After Models YAML generation, dont' forget to add the following documentation and tests:
+## After Models YAML generation, don't forget to add the following documentation and tests:
 # Example:
 ```yaml
   - name: nasa_sky_news
@@ -237,7 +242,8 @@ If all steps are successful:
 ## Additional Resources
 
 - For more information about dbt project structure and best practices, refer to the [dbt documentation](https://docs.getdbt.com/)
-- For Turntable extension features and configuration, check the [Turntable documentation](https://docs.turntable.ai/)
+- For dbt Power User extension features and configuration, see the [dbt Power User documentation](https://docs.myaltimate.com/)
+- For Claude Code AI assistant usage, visit the [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code)
 - For Lightdash CLI usage and configuration, visit the [Lightdash documentation](https://docs.lightdash.com/)
 - For YAML linting rules, see the [yamllint documentation](https://yamllint.readthedocs.io/)
 - For SQL linting rules, see the [SQLFluff documentation](https://docs.sqlfluff.com/)

@@ -1,23 +1,9 @@
 {
-    "turntable.profilesDirectory": ".dbt/",
     "terminal.integrated.gpuAcceleration": "off",
-    "turntable.environmentVariables": [
-        "GIT_BRANCH=\"dev_vscode\"",
-        "SNOWSQL_USERNAME=\"EMPTY\"",
-        "SNOWSQL_PASSWORD=\"EMPTY\"",
-        "SNOWSQL_ROLE=\"EMPTY\"",
-        "REDSHIFT_HOST=\"EMPTY\"",
-        "REDSHIFT_DATABASE=\"EMPTY\"",
-        "REDSHIFT_PORT=\"5439\"",
-        "REDSHIFT_USER=\"EMPTY\"",
-        "REDSHIFT_PASSWORD=\"EMPTY\"",
-        "FABRIC_SERVER=\"EMPTY\"",
-        "FABRIC_DATABASE=\"EMPTY\"",
-        "FABRIC_PORT=\"1433\"",
-        "FABRIC_USER=\"EMPTY\"",
-        "FABRIC_PASSWORD=\"EMPTY\"",
-        "FABRIC_AUTHENTICATION=\"activeDirectory\""
-    ],
-    "turntable.dbtVersion": "1.7",
-    "turntable.telemetry.enabled": false
-  }
+    "dbt.profilesDirOverride": ".dbt",
+    "dbtPowerUser.enableNewLineagePanel": true,
+    "dbtPowerUser.enableNotebooks": true,
+    "terminal.integrated.env.linux": {
+        "GIT_BRANCH": "dev_main"
+    }
+}
