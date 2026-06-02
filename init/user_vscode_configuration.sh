@@ -2,7 +2,7 @@
 
 echo "🚀 Welcome ${JUPYTERHUB_USER} to your Data Modeling coder environment with dbt Labs framework! 🛠️
 
-You are now in a specialized environment for data modeling using dbt (data build tool). This environment is powered by Visual Studio Code with special extensions tailored for efficient and streamlined data modeling workflows.
+You are now in a specialized environment for data modeling using dbt (data build tool). This environment is powered by Visual Studio Code with dbt Power User, Claude Code AI assistant, and SQLFluff for an efficient data modeling workflow.
 
 Feel free to explore the tools and features available to enhance your data modeling experience. If you have any questions or need assistance, don't hesitate to ask us on Slack.
 
@@ -35,7 +35,7 @@ if [ -f "$current_path/dbt_project.yml" ]; then
     echo "\n "
     # Extract username without domain
     USERNAME=${JUPYTERHUB_USER%%@*}
-    GIT_BRANCH=$(git branch --show-current)
+    export GIT_BRANCH=$(git branch --show-current)
 
     # Extract Project name
     project_name=$(/usr/local/bin/yqs eval '.name' ./dbt_project.yml)
@@ -105,12 +105,12 @@ if [ -f "$current_path/dbt_project.yml" ]; then
 
     if [ ! -e "$VSCODE_FILE_PATH_UPDATED" ]; then
         cp "$VSCODE_SETTINGS_FILE_PATH" "$VSCODE_FILE_PATH"
-        jq '.["turntable.environmentVariables"][0] = "GIT_BRANCH=\"'''dev_"${GIT_BRANCH}"'''\""' $VSCODE_FILE_PATH > $VSCODE_FILE_PATH_UPDATED
+        jq '.["terminal.integrated.env.linux"]["GIT_BRANCH"] = "dev_'"${GIT_BRANCH}"'"' $VSCODE_FILE_PATH > $VSCODE_FILE_PATH_UPDATED
         rm -rf $VSCODE_FILE_PATH
-        echo "🛠️  File vscode - settings.json was moved and updated in $TARGET_FILE_PATH_UPDATED"
+        echo "🛠️  File vscode - settings.json was moved and updated in $VSCODE_FILE_PATH_UPDATED"
     else
         echo "🛠️  File $VSCODE_FILE_PATH_UPDATED already exists. Skipping copy."
-        jq '.["turntable.environmentVariables"][0] = "GIT_BRANCH=\"'''dev_"${GIT_BRANCH}"'''\""' $VSCODE_FILE_PATH_UPDATED > $VSCODE_FILE_PATH
+        jq '.["terminal.integrated.env.linux"]["GIT_BRANCH"] = "dev_'"${GIT_BRANCH}"'"' $VSCODE_FILE_PATH_UPDATED > $VSCODE_FILE_PATH
         cp $VSCODE_FILE_PATH $VSCODE_FILE_PATH_UPDATED
         rm -rf $VSCODE_FILE_PATH
         echo "🛠️  File vscode - settings.json was updated in $VSCODE_FILE_PATH_UPDATED"
@@ -224,7 +224,7 @@ echo "To get started with data modeling, please read the instructions at:"
 echo "   /home/coder/data-modeling.md"
 echo "This guide will walk you through:"
 echo "   - Setting up your dbt project"
-echo "   - Choosing between Turntable and Lightdash workflows"
+echo "   - Choosing between dbt Power User and Lightdash workflows"
 echo "   - Creating and managing your data models"
 echo "   - Best practices for documentation and testing"
 echo "\n"

@@ -14,6 +14,14 @@ trap 'catch $? $LINENO' EXIT
 
 docker buildx build . \
   --pull \
-  --tag europe-central2-docker.pkg.dev/fast-bi-common/bi-platform/tsb-ide-coder-server-core:v4.103.2-focal \
+  --tag europe-central2-docker.pkg.dev/fast-bi-common/bi-platform/tsb-ide-coder-server-core:v4.122.1-focal \
+  --platform linux/amd64 \
+  --push
+
+docker buildx build . \
+  --pull \
+  --tag 4fastbi/data-modeling-ide-core:latest \
+  --tag 4fastbi/data-modeling-ide-core:v0.2.0 \
+  --tag 4fastbi/data-modeling-ide-core:0.2.0 \
   --platform linux/amd64 \
   --push
