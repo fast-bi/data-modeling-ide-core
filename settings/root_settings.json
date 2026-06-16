@@ -7,6 +7,8 @@
     "editor.defaultFormatter": "oderwat.indent-rainbow"
   },
   "terminal.integrated.gpuAcceleration": "off",
+  "task.allowAutomaticTasks": "on",
+  "security.workspace.trust.enabled": false,
   "git.enableSmartCommit": true,
   "git.autofetch": true,
   "git.confirmSync": false,
