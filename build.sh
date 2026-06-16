@@ -21,7 +21,7 @@ docker buildx build . \
 docker buildx build . \
   --pull \
   --tag 4fastbi/data-modeling-ide-core:latest \
-  --tag 4fastbi/data-modeling-ide-core:v0.2.0 \
-  --tag 4fastbi/data-modeling-ide-core:0.2.0 \
+  --tag 4fastbi/data-modeling-ide-core:v0.2.1 \
+  --tag 4fastbi/data-modeling-ide-core:0.2.1 \
   --platform linux/amd64 \
   --push
